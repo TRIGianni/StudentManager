@@ -7,5 +7,5 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
-public record StudentResponse(int id,String firstName, String lastName, String email, LocalDate dateOfBirth) {
+public record StudentResponse(Long id,String firstName, String lastName, String email, LocalDate dateOfBirth) {
 }
