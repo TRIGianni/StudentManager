@@ -1,5 +1,6 @@
 package be.heh.api_rest.exceptions;
 
+import be.heh.api_rest.service.StudentTooYoungException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -33,6 +34,22 @@ public class GlobalExceptionHandler {
                         fe.getDefaultMessage()))
                 .collect(Collectors.toList());
         problem.setProperty("fieldErrors",fieldErrors);
+        return problem;
+    }
+
+    // 422 - Âge minimum non atteint (règle métier)
+    @ExceptionHandler(StudentTooYoungException.class)
+    public ProblemDetail handleStudentTooYoung(
+            StudentTooYoungException ex,
+            HttpServletRequest request) {
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+
+        problem.setTitle("Âge minimum non atteint");
+        problem.setType(URI.create("http://localhost:8080/errors/student-too-young"));
+        problem.setInstance(URI.create(request.getRequestURI()));
+
         return problem;
     }
 }
