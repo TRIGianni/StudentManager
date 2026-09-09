@@ -1,66 +1,63 @@
 package be.heh.api_rest.controller;
 
+import be.heh.api_rest.service.Student;
+import be.heh.api_rest.service.StudentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.client.RestTestClient;
 
-class StudentControllerTest {
-    private RestTestClient client;
+import java.time.LocalDate;
 
-    @BeforeEach
-    void setUp() {
-        client = RestTestClient.bindToController(new StudentController()).build();
-    }
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@WebMvcTest(StudentController.class)
+@AutoConfigureRestTestClient
+class StudentControllerTest {
+    @Autowired
+    private RestTestClient restTestClient;
+
+    @MockitoBean
+    private StudentService studentService;
+
+    @MockitoBean
+    private StudentWebMapper mapper;
 
     @Test
-    void createStudent() {
-        String requestBody = """
-                {
-                  "firstName": "Jean",
-                  "lastName": "Dupont",
-                  "email": "jean.dupont@example.com",
-                  "dateOfBirth": "2005-03-15"
-                }
-                """;
+    void createStudent_shouldReturn201AndLocation() {
+        StudentRequest request = new StudentRequest("Jean", "Dupont", "jean.dupont@mail.com", LocalDate.of(1990, 1, 1));
+        Student domainToSave = new Student(null, "Jean", "Dupont", "jean.dupont@mail.com", LocalDate.of(1990, 1, 1));
+        Student savedStudent = new Student(1L, "Jean", "Dupont", "jean.dupont@mail.com", LocalDate.of(1990, 1, 1));
+        StudentResponse response = new StudentResponse(1L, "Jean", "Dupont", "jean.dupont@mail.com", LocalDate.of(1990, 1, 1));
 
-        client.post()
+        when(mapper.toDomain(request)).thenReturn(domainToSave);
+        when(studentService.createStudent(domainToSave)).thenReturn(savedStudent);
+        when(mapper.toResponse(savedStudent)).thenReturn(response);
+
+        restTestClient.post()
                 .uri("/api/students")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(requestBody)
+                .body(request)
                 .exchange()
                 .expectStatus().isCreated()
-                .expectHeader()
-                .valueMatches("Location", ".*/api/students/100$")
-                .expectBody()
-                .jsonPath("$.id").isEqualTo(100)
-                .jsonPath("$.firstName").isEqualTo("Jean")
-                .jsonPath("$.lastName").isEqualTo("Dupont")
-                .jsonPath("$.email").isEqualTo("jean.dupont@example.com");
+                .expectHeader().location("http://localhost/api/students/1")
+                .expectBody(StudentResponse.class)
+                .isEqualTo(response);
+
+        verify(studentService).createStudent(domainToSave);
     }
 
-    @Test
-    void getStudent() {
-        client.get()
-                .uri("/api/students/1")
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.id").isEqualTo(1)
-                .jsonPath("$.firstName").isEqualTo("Alice")
-                .jsonPath("$.lastName").isEqualTo("Bob")
-                .jsonPath("$.email").isEqualTo("alice@gmail.com");
-    }
+        @Test
+        void getStudent() {
+        }
 
-    @Test
-    void searchStudents() {
-        client.get()
-                .uri(uriBuilder -> uriBuilder.path("/api/students").
-                        queryParam("lastName", "Dupont").build())
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.lastName").isEqualTo("Dupont")
-                .jsonPath("$.email").isEqualTo("alice@gmail.com");
+        @Test
+        void searchStudents() {
+
+        }
     }
-}

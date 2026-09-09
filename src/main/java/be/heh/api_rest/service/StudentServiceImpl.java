@@ -3,6 +3,7 @@ package be.heh.api_rest.service;
 import be.heh.api_rest.exceptions.StudentTooYoungException;
 import be.heh.api_rest.repository.StudentRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -13,6 +14,7 @@ public class StudentServiceImpl implements StudentService {
         this.studentRepository = studentRepository;
     }
 
+    @Transactional
     @Override
     public Student createStudent(Student student) {
 
