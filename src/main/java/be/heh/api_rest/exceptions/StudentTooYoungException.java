@@ -1,4 +1,4 @@
-package be.heh.api_rest.service;
+package be.heh.api_rest.exceptions;
 
 public class StudentTooYoungException extends RuntimeException{
     public StudentTooYoungException() {
