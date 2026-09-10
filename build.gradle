@@ -29,6 +29,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc:4.2.0-M1'
     developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
     implementation 'org.postgresql:postgresql:42.7.13'
+
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.testcontainers:testcontainers-junit-jupiter'
+    testImplementation 'org.testcontainers:testcontainers-postgresql'
+    testImplementation 'org.springframework.boot:spring-boot-starter-jdbc-test'
+
 }
 
 tasks.named('test') {
