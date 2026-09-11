@@ -12,5 +12,5 @@ public interface StudentRepository {
 
     Optional<Student> findById(Long id);
 
-    List<Student> findByLastNameContaining(String lastName);
+    List<Student> findByLastName(String lastName);
 }

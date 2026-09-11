@@ -43,7 +43,7 @@ private final JdbcClient jdbcClient;
     }
 
     @Override
-    public List<Student> findByLastNameContaining(String lastName) {
+    public List<Student> findByLastName(String lastName) {
         return List.of();
     }
 }
