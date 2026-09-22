@@ -2,6 +2,7 @@ package be.heh.api_rest.controller;
 
 import be.heh.api_rest.service.Student;
 import be.heh.api_rest.service.StudentService;
+import be.heh.api_rest.service.StudentServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -58,19 +59,21 @@ public class StudentController {
             @Parameter(description = "Identifiant de l'étudiant", example = "1")
             @PathVariable Long id) {
 
-        StudentResponse studentResponse = new StudentResponse(id, "Alice", "Bob",
-                "alice@gmail.com", LocalDate.of(1980, 1, 1));
+       Student student = studentService.getStudentById(id);
+       StudentResponse studentResponse = mapper.toResponse(student);
 
         return ResponseEntity.ok(studentResponse);
     }
 
     @GetMapping("students")
-    public ResponseEntity<StudentResponse> searchStudents(
+    public ResponseEntity<List<StudentResponse>> searchStudents(
             @Parameter(description = "Nom de famille (ou partie du nom) à rechercher", example = "Dupont")
             @RequestParam(required = false) String lastName) {
 
-        StudentResponse studentResponse = new StudentResponse(100L, "Alice", lastName,
-                "alice@gmail.com", LocalDate.of(1980, 1, 1));
+        List<Student> students = studentService.searchStudentsByLastName(lastName);
+        List<StudentResponse> studentResponse = students.stream().map((student)->{
+            return mapper.toResponse(student);
+        }).toList();
 
         return ResponseEntity.ok(studentResponse);
     }

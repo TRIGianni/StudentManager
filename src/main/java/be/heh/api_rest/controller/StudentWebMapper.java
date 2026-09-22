@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 public class StudentWebMapper {
     // Sens entrant : requête web -> modèle de domaine
     public Student toDomain(StudentRequest request) {
-        return new Student(
+        return Student.create(
                 request.firstName(),
                 request.lastName(),
                 request.email(),

@@ -5,6 +5,8 @@ import be.heh.api_rest.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class StudentServiceImpl implements StudentService {
     private static final int MINIMUM_AGE = 16;
@@ -31,5 +33,16 @@ public class StudentServiceImpl implements StudentService {
         normalizedStudent = studentRepository.save(normalizedStudent);
 
         return normalizedStudent;
+    }
+
+    @Override
+    public Student getStudentById(Long id) {
+        return studentRepository.findById(id);
+    }
+
+    @Override
+    public List<Student> searchStudentsByLastName(String lastName) {
+        List<Student> students = studentRepository.findByLastName(lastName);
+        return students;
     }
 }

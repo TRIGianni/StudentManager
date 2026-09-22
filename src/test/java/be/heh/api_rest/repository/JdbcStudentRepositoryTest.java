@@ -54,7 +54,7 @@ class JdbcStudentRepositoryTest {
     @Test
     @Sql("/schema.sql")
     void save_shouldPersistStudentAndAssignGeneratedId() {
-        Student studentToSave = new Student("Jean", "Dupont", "jean.dupont@mail.com", LocalDate.of(1990, 1, 1));
+        Student studentToSave = Student.create("Jean", "Dupont", "jean.dupont@mail.com", LocalDate.of(1990, 1, 1));
         Student studentSaved = jdbcStudentRepository.save(studentToSave);
 
         assertThat(studentSaved.getId()).isNotNull();
@@ -63,5 +63,16 @@ class JdbcStudentRepositoryTest {
         assertThat(studentSaved.getEmail()).isEqualTo("jean.dupont@mail.com");
         assertThat(studentSaved.getDateOfBirth()).isEqualTo(LocalDate.of(1990, 1, 1));
         assertThat(studentSaved.getId()).isEqualTo(1);
+    }
+
+    @Test
+    @Sql({"/schema.sql","/data.sql"})
+    void studentFoundById_shouldReturnStudent() {
+        Student st = jdbcStudentRepository.findById(1L);
+        assertThat(st.getFirstName()).isEqualTo("totoTest1");
+        assertThat(st.getLastName()).isEqualTo("TOTO_2");
+        assertThat(st.getEmail()).isEqualTo("totoTest1@gmail.com");
+        assertThat(st.getDateOfBirth()).isEqualTo(LocalDate.of(2000, 2, 21));
+
     }
 }

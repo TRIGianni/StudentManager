@@ -1,0 +1,2 @@
+INSERT INTO student (first_name,last_name,email,date_of_birth) VALUES ('totoTest1','TOTO_2','totoTest1@gmail.com','2000-02-21');
+INSERT INTO student (first_name,last_name,email,date_of_birth) VALUES ('titi','TOTO_2','toto@gmail.com','2012-02-21');

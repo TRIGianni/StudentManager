@@ -10,7 +10,7 @@ public interface StudentRepository {
 
     Student save(Student student);
 
-    Optional<Student> findById(Long id);
+    Student findById(Long id);
 
     List<Student> findByLastName(String lastName);
 }

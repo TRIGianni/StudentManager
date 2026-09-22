@@ -38,12 +38,21 @@ private final JdbcClient jdbcClient;
     }
 
     @Override
-    public Optional<Student> findById(Long id) {
-        return Optional.empty();
+    public Student findById(Long id) {
+        Student studentFound = jdbcClient.sql("SELECT * FROM student WHERE id=:id")
+                .param("id", id)
+                .query(Student.class)
+                .single();
+        return studentFound;
     }
 
     @Override
     public List<Student> findByLastName(String lastName) {
-        return List.of();
+        List<Student> students = jdbcClient.sql("SELECT * FROM student WHERE last_name=:lastname")
+                .param("lastname",lastName)
+                .query(Student.class)
+                .list();
+
+        return students;
     }
 }

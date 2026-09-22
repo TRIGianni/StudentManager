@@ -1,5 +1,6 @@
 package be.heh.api_rest.service;
 
+import java.beans.ConstructorProperties;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -10,8 +11,8 @@ public class Student {
     private final String email;
     private final LocalDate dateOfBirth;
 
-    public Student(String firstName, String lastName, String email, LocalDate dateOfBirth) {
-        this(null, firstName, lastName, email, dateOfBirth);
+    public static Student create(String firstName, String lastName, String email, LocalDate dateOfBirth) {
+        return new Student(null, firstName, lastName, email, dateOfBirth);
     }
 
     public Student(Long id, String firstName, String lastName, String email, LocalDate dateOfBirth) {
