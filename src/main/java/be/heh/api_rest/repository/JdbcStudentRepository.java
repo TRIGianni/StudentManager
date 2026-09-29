@@ -15,7 +15,7 @@ import java.util.Optional;
 @Repository
 public class JdbcStudentRepository implements StudentRepository {
 
-private final JdbcClient jdbcClient;
+    private final JdbcClient jdbcClient;
 
     public JdbcStudentRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
@@ -23,7 +23,11 @@ private final JdbcClient jdbcClient;
 
     @Override
     public boolean existsByEmail(String email) {
-        return false;
+        Boolean exists = jdbcClient.sql("SELECT EXISTS(SELECT * FROM student WHERE email = ?)")
+                .param(email)
+                .query(Boolean.class)
+                .single();
+        return Boolean.TRUE.equals(exists);
     }
 
     @Override
@@ -49,7 +53,7 @@ private final JdbcClient jdbcClient;
     @Override
     public List<Student> findByLastName(String lastName) {
         List<Student> students = jdbcClient.sql("SELECT * FROM student WHERE last_name=:lastname")
-                .param("lastname",lastName)
+                .param("lastname", lastName)
                 .query(Student.class)
                 .list();
 

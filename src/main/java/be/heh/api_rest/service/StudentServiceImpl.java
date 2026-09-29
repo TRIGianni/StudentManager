@@ -1,7 +1,10 @@
 package be.heh.api_rest.service;
 
+import be.heh.api_rest.exceptions.EmailAlreadyUsedException;
+import be.heh.api_rest.exceptions.StudentNotFoundException;
 import be.heh.api_rest.exceptions.StudentTooYoungException;
 import be.heh.api_rest.repository.StudentRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +27,11 @@ public class StudentServiceImpl implements StudentService {
         Student normalizedStudent = student
                 .withNormalizedEmail()
                 .withCapitalizedNames();
+
+        if(studentRepository.existsByEmail(normalizedStudent.getEmail())){
+            throw new EmailAlreadyUsedException(normalizedStudent.getEmail());
+        }
+
         // Âge minimum requis pour l'inscription
         int effectiveAge = normalizedStudent.computeAgeFromDateOfBirth();
 
@@ -37,7 +45,11 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student getStudentById(Long id) {
-        return studentRepository.findById(id);
+        try {
+            return studentRepository.findById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new StudentNotFoundException(id);
+        }
     }
 
     @Override
